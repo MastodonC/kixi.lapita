@@ -1,6 +1,11 @@
 # kixi.lapita
 
-FIXME: description
+## For (data) explorers!
+
+The Lapita was a prehistoric Pacific Ocean people from c. 1600 BCE to c. 500 BCE .
+They were expert in seamanship and navigation, reaching out and finding islands separated from each other by hundreds of miles of empty ocean. Their descendants, the Polynesians, would populate islands from Hawaii to Easter Island, possibly even reaching the South American continent.
+
+See [wikipedia](https://en.wikipedia.org/wiki/Lapita_culture)
 
 ## Installation
 
