@@ -8,9 +8,11 @@
             [witan.datasets :as wds]
             [schemas :as sc]))
 
-;; Read and write files
+;;;;;;;;;;;;;;;;;;;;
+;; kixi.lapita.io ;; - Read and write files
+;;;;;;;;;;;;;;;;;;;;
 (defn format-key
-  "Handle keys that contains a space"
+  "Handle column names keys that contain a space."
   [key]
   ((comp
     keyword
@@ -19,7 +21,8 @@
    key))
 
 (defn load-csv
-  "Loads csv file, returns a dataset."
+  "Loads csv file, returns a core.matrix dataset.
+   If a schema is provided, the data is coerce to the right type."
   ([filename]
    (let [file (io/file filename)]
      (when (.exists (io/as-file file))
@@ -41,7 +44,7 @@
        (as-> {:keys [column-names columns]} (ds/dataset column-names columns)))))
 
 (defn write-csv
-  "Write dataset to a csv file"
+  "Write a dataset to a csv file"
   [ds f]
   (let [rows-as-maps (ds/row-maps ds)
         colnames (mapv name (keys (first rows-as-maps)))
@@ -49,7 +52,9 @@
     (with-open [out-file (io/writer f)]
       (data-csv/write-csv out-file (into [colnames] rows)))))
 
-;; Get a preview of the data
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;; kixi.lapita.preview ;; - Get a preview of the data
+;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn head
   "Look up the top n rows of the dataset.
    The default is to look up the first 5 rows."
@@ -57,16 +62,16 @@
   ([ds n]
    (wds/subset-ds ds :rows (range 0 n))))
 
-(comment (head repairs-data 2))
-
-(defn info [ds]
+(defn info
+  "Takes in a dataset, return information on the columns,
+   number of rows and columns."
+  [ds]
   {:column-names (:column-names ds)
    :num-rows (first (:shape ds))
    :num-columns (second (:shape ds))})
 
-(comment (info repairs-data))
-
-;; reducers from https://github.com/MastodonC/airsome/blob/master/src/airsome/core.clj
+;; reducers from a private MastodonC repo
+;; https://github.com/MastodonC/airsome/blob/master/src/airsome/core.clj
 (defn maximum
   ([] ::-∞)
   ([x] (if (identical? ::-∞ x)
@@ -80,14 +85,17 @@
          ::+∞
          x))
   ([a b] (if (or (identical? ::+∞ a) (> a b)) b a)))
-;;;;;;;;;;;;;;;;;
+;;;;;
 
+;; To be continued
 (defn describe [ds]
   (map (fn [col]
          (transduce (map col) maximum ds))
    :column-names))
 
-;; More in depth
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; kixi.lapita.transform ;;- Transform the data
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn count-elements-in-column
   "Takes in a dataset and a column name.
    Counts how many times an element appears in the column.
@@ -99,6 +107,7 @@
        ds/dataset))
 
 
+;; Examples of uses
 (comment (def repairs-data (load-csv "data/historic-repairs-2014-2015.csv"))
 
          (-> repairs-data
