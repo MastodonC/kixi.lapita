@@ -1,5 +1,7 @@
 # kixi.lapita
 
+[![CircleCI](https://circleci.com/gh/MastodonC/kixi.lapita.svg?style=svg)](https://circleci.com/gh/MastodonC/kixi.lapita)
+
 ## For (data) explorers!
 
 The Lapita was a prehistoric Pacific Ocean people from c. 1600 BCE to c. 500 BCE .
@@ -9,7 +11,7 @@ See [wikipedia](https://en.wikipedia.org/wiki/Lapita_culture)
 
 ### Status
 
-See [![Stories in progress](https://badge.waffle.io/MastodonC/kixi.lapita.svg?label=in%20progress&title=In%20progress)](http://waffle.io/MastodonC/kixi.lapita)
+See progress:  [![Stories in progress](https://badge.waffle.io/MastodonC/kixi.lapita.svg?label=in%20progress&title=In%20progress)](http://waffle.io/MastodonC/kixi.lapita)
 
 One namespace `kixi.lapita` with functions to:
 

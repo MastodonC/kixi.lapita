@@ -55,13 +55,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; kixi.lapita.preview ;; - Get a preview of the data
 ;;;;;;;;;;;;;;;;;;;;;;;;;
-(defn head
-  "Look up the top n rows of the dataset.
-   The default is to look up the first 5 rows."
-  ([ds] (head ds 5))
-  ([ds n]
-   (wds/subset-ds ds :rows (range 0 n))))
-
 (defn info
   "Takes in a dataset, return information on the columns,
    number of rows and columns."
@@ -69,6 +62,15 @@
   {:column-names (:column-names ds)
    :num-rows (first (:shape ds))
    :num-columns (second (:shape ds))})
+
+(defn head
+  "Look up the top n rows of the dataset.
+   The default is to look up the first 5 rows."
+  ([ds] (if (>= (:num-rows (info ds)) 5)
+          (head ds 5)
+          ds))
+  ([ds n]
+   (wds/subset-ds ds :rows (range 0 n))))
 
 ;; reducers from a private MastodonC repo
 ;; https://github.com/MastodonC/airsome/blob/master/src/airsome/core.clj
