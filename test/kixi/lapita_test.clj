@@ -3,7 +3,6 @@
             [kixi.lapita :refer :all]
             [clojure.core.matrix.dataset :as ds]))
 
-
 (def test-dataset (ds/dataset [{:col-1 1 :col-2 "a" :col-3 1.1}
                                {:col-1 2 :col-2 "b" :col-3 1.2}
                                {:col-1 3 :col-2 "c" :col-3 1.3}]))
@@ -52,8 +51,8 @@
     (is (= (count-elements-in-column test-dataset :col-2 :count-of-col-2)
            (ds/dataset [{:col-2 "a" :count-of-col-2 1}
                         {:col-2 "b" :count-of-col-2 1}
-                        {:col-2 "c" :count-of-col-2 1}]))
-        (= (count-elements-in-column test-dataset3 :col-2 :count-of-col-2)
+                        {:col-2 "c" :count-of-col-2 1}])))
+    (is (= (count-elements-in-column test-dataset3 :col-2 :count-of-col-2)
            (ds/dataset [{:col-2 "a" :count-of-col-2 3}
-                        {:col-2 "b" :count-of-col-2 3}
+                        {:col-2 "b" :count-of-col-2 2}
                         {:col-2 "c" :count-of-col-2 1}])))))

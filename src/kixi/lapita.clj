@@ -93,7 +93,7 @@
 (defn describe [ds]
   (map (fn [col]
          (transduce (map col) maximum ds))
-   :column-names))
+       :column-names))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; kixi.lapita.transform ;;- Transform the data
@@ -107,7 +107,6 @@
        (map (fn [[k v]] (merge k {output-col (mx/row-count v)})))
        (sort-by input-col)
        ds/dataset))
-
 
 ;; Examples of uses
 (comment (def repairs-data (load-csv "data/historic-repairs-2014-2015.csv"))
