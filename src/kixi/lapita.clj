@@ -87,7 +87,7 @@
   ([a b] (if (or (identical? ::+∞ a) (> a b)) b a)))
 ;;;;;
 
-;; To be continued
+;; Work in progress (transduce would work for Clojure data structure but not dataset)
 (defn describe [ds]
   (map (fn [col]
          (transduce (map col) maximum ds))
