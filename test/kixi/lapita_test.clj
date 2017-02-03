@@ -45,9 +45,10 @@
 
 (deftest write-csv-test
   (testing "A CSV is created when calling the write-csv function"
-    (let [tmp (fs/temp-file "test-write-data")]
+    (let [tmp (fs/temp-file "test-write-data-")]
       (write-csv! test-dataset2 tmp)
-      (is (.isFile (clojure.java.io/file tmp))))))
+      (is (= test-dataset2
+             (load-csv tmp sc/TestData2))))))
 
 (deftest head-test
   (testing "Returns the number of rows wanted"

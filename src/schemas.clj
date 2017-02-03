@@ -42,3 +42,6 @@
 (def TestData1
   (make-ordered-ds-schema [[:col-1 s/Int] [:col-2 java.lang.Double]
                            [:col-3 s/Str] [:col-4 sc/Date]]))
+
+(def TestData2
+  (make-ordered-ds-schema [[:col-1 s/Int] [:col-2 s/Str] [:col-3 java.lang.Double]]))
