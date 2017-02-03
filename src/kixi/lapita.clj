@@ -43,7 +43,7 @@
        (sc/apply-schema-coercion schema)
        (as-> {:keys [column-names columns]} (ds/dataset column-names columns)))))
 
-(defn write-csv
+(defn write-csv!
   "Write a dataset to a csv file"
   [ds f]
   (let [rows-as-maps (ds/row-maps ds)
