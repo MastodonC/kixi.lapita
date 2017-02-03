@@ -1,6 +1,12 @@
-(ns schemas
+(ns kixi.lapita.schemas
   (:require [schema.core :as s]
             [schema.coerce :as coerce]))
+
+;; Create and valid schemas using Plumatic schemas (https://github.com/plumatic/schema)
+(defn make-ordered-ds-schema [col-vec]
+  {:column-names (mapv #(s/one (s/eq (first %)) (str (first %))) col-vec)
+   :columns (mapv #(s/one [(second %)] (format "col %s" (name (first %)))) col-vec)
+   s/Keyword s/Any})
 
 (defn make-row-schema
   [col-schema]

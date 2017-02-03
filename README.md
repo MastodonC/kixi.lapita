@@ -1,5 +1,7 @@
 # kixi.lapita
 
+[![CircleCI](https://circleci.com/gh/MastodonC/kixi.lapita.svg?style=svg)](https://circleci.com/gh/MastodonC/kixi.lapita)
+
 ## For (data) explorers!
 
 The Lapita was a prehistoric Pacific Ocean people from c. 1600 BCE to c. 500 BCE .
@@ -7,31 +9,37 @@ They were expert in seamanship and navigation, reaching out and finding islands 
 
 See [wikipedia](https://en.wikipedia.org/wiki/Lapita_culture)
 
-## Installation
+### Status
 
-Download from http://example.com/FIXME.
+See progress:  [![Stories in progress](https://badge.waffle.io/MastodonC/kixi.lapita.svg?label=in%20progress&title=In%20progress)](http://waffle.io/MastodonC/kixi.lapita)
 
-## Usage
+One namespace `kixi.lapita` with functions to:
 
-FIXME: explanation
+* read/write files to/from [`core.matrix` datasets](https://github.com/mikera/core.matrix/blob/develop/src/main/clojure/clojure/core/matrix/dataset.clj)
+* preview the content of a dataset
+* transform data in a dataset
 
-    $ java -jar kixi.lapita-0.1.0-standalone.jar [args]
+### Description
 
-## Options
+This project uses `core.matrix` datasets as a data structure to handle the data.
 
-FIXME: listing of options this app accepts.
+It uses functions from [`clojure.core.matrix.dataset`](https://github.com/mikera/core.matrix/blob/develop/src/main/clojure/clojure/core/matrix/dataset.clj) and [`witan.datasets`](https://github.com/MastodonC/witan.workspace-api/blob/master/src/witan/datasets.clj).
 
-## Examples
 
-...
+#### Read/write files to/from datasets
 
-### Bugs
+* `load-csv` : To load data from a CSV file with or w/o schema coercion
+* `write-csv` : To write the content of a dataset to a CSV file
 
-...
+#### Preview the content of a dataset
 
-### Any Other Sections
-### That You Think
-### Might be Useful
+* `head` : To have a pick at the n top rows
+* `info` : To know the column names, number of rows and columns
+* `describe` : [work in progress] To describe the numerical columns (count, min, max...)
+
+#### Transform data in a dataset
+
+* `count-elements-in-column` : To output the count of each element in a column
 
 ## License
 
