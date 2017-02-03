@@ -9,8 +9,8 @@
                  [prismatic/schema "1.1.3"]
                  [org.clojure/data.csv "0.1.3"]
                  [schema-contrib "0.1.3"]
-                 [instaparse "1.4.3"]
-                 [me.raynes/fs "1.4.6"]]
+                 [instaparse "1.4.3"]]
   :main ^:skip-aot kixi.lapita
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:uberjar {:aot :all}
+             :dev {:dependencies [[me.raynes/fs "1.4.6"]]}})
