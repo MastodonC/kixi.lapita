@@ -37,7 +37,7 @@
            (let [parsed-csv (with-open [in-file (io/reader file)]
                               (doall (data-csv/read-csv in-file)))
                  parsed-data (rest parsed-csv)
-                 headers (first parsed-csv)]
+                 headers (map format-key (first parsed-csv))]
              {:column-names headers
               :columns (vec parsed-data)})))
        (sc/apply-schema-coercion schema)

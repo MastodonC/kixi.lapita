@@ -1,6 +1,13 @@
 (ns schemas
   (:require [schema.core :as s]
-            [schema.coerce :as coerce]))
+            [schema.coerce :as coerce]
+            [schema-contrib.core :as sc]))
+
+;; Create and valid schemas using Plumatic schemas (https://github.com/plumatic/schema)
+(defn make-ordered-ds-schema [col-vec]
+  {:column-names (mapv #(s/one (s/eq (first %)) (str (first %))) col-vec)
+   :columns (mapv #(s/one [(second %)] (format "col %s" (name (first %)))) col-vec)
+   s/Keyword s/Any})
 
 (defn make-row-schema
   [col-schema]
@@ -31,3 +38,7 @@
 (defn apply-schema-coercion [data schema]
   {:column-names (apply-col-names-schema schema data)
    :columns (vec (apply-row-schema schema data))})
+
+(def TestData1
+  (make-ordered-ds-schema [[:col-1 s/Int] [:col-2 java.lang.Double]
+                           [:col-3 s/Str] [:col-4 sc/Date]]))

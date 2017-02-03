@@ -1,7 +1,8 @@
 (ns kixi.lapita-test
   (:require [clojure.test :refer :all]
             [kixi.lapita :refer :all]
-            [clojure.core.matrix.dataset :as ds]))
+            [clojure.core.matrix.dataset :as ds]
+            [schemas :as sc]))
 
 (def test-dataset (ds/dataset [{:col-1 1 :col-2 "a" :col-3 1.1}
                                {:col-1 2 :col-2 "b" :col-3 1.2}
@@ -20,6 +21,26 @@
                                 {:col-1 4 :col-2 "a" :col-3 1.4}
                                 {:col-1 5 :col-2 "a" :col-3 1.5}
                                 {:col-1 6 :col-2 "b" :col-3 1.6}]))
+
+(deftest load-csv-test
+  (testing "CSV file loaded into a dataset - w/o a schema all values are considered strings"
+    (is (= (load-csv "test-data/test-data-1.csv")
+           (ds/dataset [{:col-1 "1" :col-2 "1.1" :col-3 "foo" :col-4 "2017-02-01"}
+                        {:col-1 "2" :col-2 "1.2" :col-3 "bar" :col-4 "2017-02-02"}
+                        {:col-1 "3" :col-2 "1.3" :col-3 "baz" :col-4 "2017-02-03"}
+                        {:col-1 "4" :col-2 "1.4" :col-3 "fizz" :col-4 "2017-02-04"}
+                        {:col-1 "5" :col-2 "1.5" :col-3 "buzz" :col-4 "2017-02-05"}
+                        {:col-1 "6" :col-2 "1.6" :col-3 "boo" :col-4 "2017-02-06"}
+                        {:col-1 "7" :col-2 "1.7" :col-3 "wiz" :col-4 "2017-02-07"}])))
+    (testing "CSV file loaded into a dataset - w/ a schema coerce data"
+      (is (= (load-csv "test-data/test-data-1.csv" sc/TestData1)
+             (ds/dataset [{:col-1 1 :col-2 1.1 :col-3 "foo" :col-4 "2017-02-01"}
+                          {:col-1 2 :col-2 1.2 :col-3 "bar" :col-4 "2017-02-02"}
+                          {:col-1 3 :col-2 1.3 :col-3 "baz" :col-4 "2017-02-03"}
+                          {:col-1 4 :col-2 1.4 :col-3 "fizz" :col-4 "2017-02-04"}
+                          {:col-1 5 :col-2 1.5 :col-3 "buzz" :col-4 "2017-02-05"}
+                          {:col-1 6 :col-2 1.6 :col-3 "boo" :col-4 "2017-02-06"}
+                          {:col-1 7 :col-2 1.7 :col-3 "wiz" :col-4 "2017-02-07"}]))))))
 
 (deftest head-test
   (testing "Returns the number of rows wanted"
