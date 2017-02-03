@@ -6,7 +6,7 @@
             [clojure.core.matrix.dataset :as ds]
             [clojure.core.matrix :as mx]
             [witan.datasets :as wds]
-            [schemas :as sc]))
+            [kixi.lapita.schemas :as sc]))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; kixi.lapita.io ;; - Read and write files
