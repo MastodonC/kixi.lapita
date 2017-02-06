@@ -20,27 +20,29 @@
     #(clojure.string/replace % #" " "-"))
    key))
 
+(defn open-csv [filename]
+  (let [file (io/file filename)]
+    (when (.exists (io/as-file file))
+      (let [parsed-csv (with-open [in-file (io/reader file)]
+                         (doall (data-csv/read-csv in-file)))
+            parsed-data (rest parsed-csv)
+            headers (map format-key (first parsed-csv))]
+        {:parsed-data parsed-data :headers headers}))))
+
 (defn load-csv
   "Loads csv file, returns a core.matrix dataset.
    If a schema is provided, the data is coerce to the right type."
   ([filename]
-   (let [file (io/file filename)]
-     (when (.exists (io/as-file file))
-       (let [parsed-csv (with-open [in-file (io/reader file)]
-                          (doall (data-csv/read-csv in-file)))
-             parsed-data (rest parsed-csv)
-             headers (map format-key (first parsed-csv))]
-         (ds/dataset (map #(zipmap headers %) parsed-data))))))
+   (let [{:keys [parsed-data headers]} (open-csv filename)]
+     (ds/dataset (map #(zipmap headers %) parsed-data))))
   ([filename schema]
-   (let [file (io/file filename)]
-     (when (.exists (io/as-file file))
-       (let [parsed-csv (with-open [in-file (io/reader file)]
-                          (doall (data-csv/read-csv in-file)))
-             parsed-data (rest parsed-csv)
-             headers (map format-key (first parsed-csv))
-             all-data (map #(zipmap headers %) parsed-data)
-             coerced-data (sc/coerce-data-from-schema all-data schema)]
-         (ds/dataset coerced-data))))))
+   (let [{:keys [parsed-data headers]} (open-csv filename)
+         all-data (map #(zipmap headers %) parsed-data)
+         coerced-data (sc/coerce-data-from-schema all-data schema)
+         errors (sc/data-inconsistent? coerced-data)]
+     (if errors
+       (sc/info-data-inconsistency coerced-data (count headers))
+       (ds/dataset coerced-data)))))
 
 (defn write-csv!
   "Write a dataset to a csv file"
@@ -50,6 +52,17 @@
         rows (mapv #(vec (vals %)) rows-as-maps)]
     (with-open [out-file (io/writer f)]
       (data-csv/write-csv out-file (into [colnames] rows)))))
+
+(defn report-errors
+  [filename schema ref-column]
+  (let [{:keys [parsed-data headers]} (open-csv filename)
+        all-data (map #(zipmap headers %) parsed-data)
+        coerced-data (sc/coerce-data-from-schema all-data schema)
+        num-cols (count headers)
+        all-errors (keep (fn [m] (when (< (count m) num-cols)
+                                   m))
+                         coerced-data)]
+    all-errors))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; kixi.lapita.preview ;; - Get a preview of the data
@@ -111,7 +124,7 @@
 (comment (def repairs-data (load-csv "data/historic-repairs-2014-2015.csv"))
 
          (def repairs-data-coerced (load-csv "data/historic-repairs-2014-2015.csv"
-                                             sc/HousingRepairData))
+                                             sc/HousingRepairSchema))
 
          (-> repairs-data
              (count-elements-in-column :property-reference :count-repairs-per-property)
