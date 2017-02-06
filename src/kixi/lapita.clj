@@ -32,16 +32,15 @@
              headers (map format-key (first parsed-csv))]
          (ds/dataset (map #(zipmap headers %) parsed-data))))))
   ([filename schema]
-   (-> (let [file (io/file filename)]
-         (when (.exists (io/as-file file))
-           (let [parsed-csv (with-open [in-file (io/reader file)]
-                              (doall (data-csv/read-csv in-file)))
-                 parsed-data (rest parsed-csv)
-                 headers (map format-key (first parsed-csv))]
-             {:column-names headers
-              :columns (vec parsed-data)})))
-       (sc/apply-schema-coercion schema)
-       (as-> {:keys [column-names columns]} (ds/dataset column-names columns)))))
+   (let [file (io/file filename)]
+     (when (.exists (io/as-file file))
+       (let [parsed-csv (with-open [in-file (io/reader file)]
+                          (doall (data-csv/read-csv in-file)))
+             parsed-data (rest parsed-csv)
+             headers (map format-key (first parsed-csv))
+             all-data (map #(zipmap headers %) parsed-data)
+             coerced-data (sc/coerce-data-from-schema all-data schema)]
+         (ds/dataset coerced-data))))))
 
 (defn write-csv!
   "Write a dataset to a csv file"
@@ -110,6 +109,9 @@
 
 ;; Examples of uses
 (comment (def repairs-data (load-csv "data/historic-repairs-2014-2015.csv"))
+
+         (def repairs-data-coerced (load-csv "data/historic-repairs-2014-2015.csv"
+                                             sc/HousingRepairData))
 
          (-> repairs-data
              (count-elements-in-column :property-reference :count-repairs-per-property)

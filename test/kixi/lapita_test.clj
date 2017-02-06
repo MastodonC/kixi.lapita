@@ -2,7 +2,6 @@
   (:require [clojure.test :refer :all]
             [kixi.lapita :refer :all]
             [clojure.core.matrix.dataset :as ds]
-            [kixi.lapita.schemas :as sc]
             [me.raynes.fs :as fs]
             [schema.core :as s]
             [schema-contrib.core :as c]))
@@ -26,11 +25,15 @@
                                 {:col-1 6 :col-2 "b" :col-3 1.6}]))
 
 (def TestData1
-  (sc/make-ordered-ds-schema [[:col-1 s/Int] [:col-2 java.lang.Double]
-                              [:col-3 s/Str] [:col-4 c/Date]]))
+  {:col-1 s/Int
+   :col-2 java.lang.Double
+   :col-3 s/Str
+   :col-4 c/Date})
 
 (def TestData2
-  (sc/make-ordered-ds-schema [[:col-1 s/Int] [:col-2 s/Str] [:col-3 java.lang.Double]]))
+  {:col-1 s/Int
+   :col-2 s/Str
+   :col-3 java.lang.Double})
 
 (deftest load-csv-test
   (testing "CSV file loaded into a dataset - w/o a schema all values are considered strings"

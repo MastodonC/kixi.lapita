@@ -1,39 +1,27 @@
 (ns kixi.lapita.schemas
   (:require [schema.core :as s]
-            [schema.coerce :as coerce]))
+            [schema.coerce :as coerce]
+            [schema-contrib.core :as c]))
 
 ;; Create and valid schemas using Plumatic schemas (https://github.com/plumatic/schema)
-(defn make-ordered-ds-schema [col-vec]
-  {:column-names (mapv #(s/one (s/eq (first %)) (str (first %))) col-vec)
-   :columns (mapv #(s/one [(second %)] (format "col %s" (name (first %)))) col-vec)
-   s/Keyword s/Any})
+(defn coerce-data-from-schema
+  [data schema]
+  (let [data-coercer (coerce/coercer schema coerce/string-coercion-matcher)]
+    (pmap data-coercer data)))
 
-(defn make-row-schema
-  [col-schema]
-  (mapv (fn [s] (let [datatype (-> s :schema first)
-                      fieldname (:name s)]
-                  (s/one datatype fieldname)))
-        (:columns col-schema)))
+;; NOTE: schema-contrib.core/Date expect a date in format ISO 8601 like YYYY-MM-DD
+;; To solve that, change the format on the spreadsheet to match ISO 8601.
+(def HousingRepairSchema
+  {:repair-number s/Str
+   :property-reference s/Str
+   :original-target-date c/Date
+   :target-end-date c/Date
+   :logged-date c/Date
+   :termination-date c/Date
+   :priority-code s/Int
+   :workforce-name s/Str
+   :description-for-code s/Str})
 
-(defn make-col-names-schema
-  [col-schema]
-  (mapv (fn [s] (let [datatype (:schema s)
-                      fieldname (:name s)]
-                  (s/one datatype fieldname)))
-        (:column-names col-schema)))
-
-(defn apply-row-schema
-  [col-schema csv-data]
-  (let [row-schema (make-row-schema col-schema)]
-    (map (coerce/coercer row-schema coerce/string-coercion-matcher)
-         (:columns csv-data))))
-
-(defn apply-col-names-schema
-  [col-schema csv-data]
-  (let [col-names-schema (make-col-names-schema col-schema)]
-    ((coerce/coercer col-names-schema coerce/string-coercion-matcher)
-     (:column-names csv-data))))
-
-(defn apply-schema-coercion [data schema]
-  {:column-names (apply-col-names-schema schema data)
-   :columns (vec (apply-row-schema schema data))})
+;; !!! I changed the way we coerce data for core.matrix datasets !!!
+;; When trying on a different dataset there might be an exception due
+;; to the order of the keys in the schema map vs the actual map of data
