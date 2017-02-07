@@ -5,7 +5,13 @@
             [schema.utils :as su]))
 
 ;; Create and valid schemas using Plumatic schemas (https://github.com/plumatic/schema)
+
+;; recently updated to return data even if inconsistent, but w/ extra metadata info
 (defn coerce-data-from-schema
+  "Performs the data coercion using a schema.
+   If the data can be coerced, it's returned w/ :validated metadata associated.
+   If there's a coercion error the non coerced data is returned associated w/ :errors
+   metadata."
   [data schema]
   (let [data-coercer (coerce/coercer schema coerce/string-coercion-matcher)]
     (pmap (fn [d] (let [coerced (data-coercer d)]
@@ -32,13 +38,12 @@
 ;; to the order of the keys in the schema map vs the actual map of data
 
 ;; Looking for inconsistencies (data missing or wrong type) using schema coercion errors
-(defn data-inconsistent? [coerced-data]
-  (some true? (keep su/error? coerced-data)))
+(defn gather-errors
+  "Returns the data records associated to :errors metadata."
+  [data]
+  (filter #(= (:data-coercion (meta %)) :errors) data))
 
-(defn info-data-inconsistency
-  [coerced-data num-cols num-rows]
-  (let [all-errors (keep (fn [m] (when (< (count m) num-cols)
-                                   m))
-                         coerced-data)]
-    (println (format "Oh no, there are issues with %d out of %d rows!"
-                     (count all-errors) (count coerced-data)))))
+(defn filter-out-errors
+  "Returns the data records associated to :validated metadata."
+  [data]
+  (remove #(= (:data-coercion (meta %)) :errors) data))
