@@ -64,8 +64,9 @@
          errors (when (or print-errors write-errors) (sc/gather-errors coerced-data))]
      (when print-errors (println (format "There are %d rows with data coercion errors out of %d rows"
                                          (count errors) (count coerced-data))))
-     (when write-errors (do (write-csv! errors "data/records-with-data-coercion-issues.csv")
-                            (println "The records with data coercion issues were saved in 'data/records-with-data-coercion-issues.csv'")))
+     (when write-errors
+       (write-csv! errors "data/records-with-data-coercion-issues.csv")
+       (println "The records with data coercion issues were saved in 'data/records-with-data-coercion-issues.csv'"))
      (if remove-errors
        (ds/dataset (sc/filter-out-errors coerced-data))
        (ds/dataset coerced-data)))))

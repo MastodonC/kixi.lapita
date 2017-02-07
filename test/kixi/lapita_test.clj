@@ -74,7 +74,7 @@
       ;;                     {:col-1 5 :col-2 1.5 :col-3 "buzz" :col-4 "2017-02-05"}
       ;;                     {:col-1 6 :col-2 1.6 :col-3 "boo" :col-4 "FOO"}
       ;;                     {:col-1 "bar" :col-2 1.7 :col-3 "" :col-4 "2017-02-07"}])))
-      )
+)
     (testing "CSV file loaded into a dataset - w/ a schema, return only coerced data"
       (is (= (csv-to-dataset "test-data/test-data-2.csv" TestData1
                              {:print-errors false :write-errors false :remove-errors true})
