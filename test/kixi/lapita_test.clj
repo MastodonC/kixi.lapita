@@ -66,14 +66,14 @@
                           {:col-1 6 :col-2 1.6 :col-3 "boo" :col-4 "2017-02-06"}
                           {:col-1 7 :col-2 1.7 :col-3 "wiz" :col-4 "2017-02-07"}]))))
     (testing "CSV file loaded into a dataset - w/ a schema, return coerced data and errors"
-      (is (= (csv-to-dataset "test-data/test-data-2.csv" TestData1)
-             (ds/dataset [{:col-1 1 :col-2 1.1 :col-3 "foo" :col-4 "2017-02-01"}
-                          {:col-1 2 :col-2 1.2 :col-3 "bar" :col-4 "2017-02-02"}
-                          {:col-1 3 :col-2 1.3 :col-3 "baz" :col-4 "2017-02-03"}
-                          {:col-1 4 :col-2 1.4 :col-3 "fizz" :col-4 "2017-02-04"}
-                          {:col-1 5 :col-2 1.5 :col-3 "buzz" :col-4 "2017-02-05"}
-                          {:col-1 "6" :col-2 "1.6" :col-3 "boo" :col-4 "FOO"}
-                          {:col-1 "bar" :col-2 "1.7" :col-3 "" :col-4 "2017-02-07"}]))))
+      (is (= (-> (ds/row-maps (csv-to-dataset "test-data/test-data-2.csv" TestData1)) set)
+             (set '({:col-1 1 :col-2 1.1 :col-3 "foo" :col-4 "2017-02-01"}
+                    {:col-1 2 :col-2 1.2 :col-3 "bar" :col-4 "2017-02-02"}
+                    {:col-1 3 :col-2 1.3 :col-3 "baz" :col-4 "2017-02-03"}
+                    {:col-1 4 :col-2 1.4 :col-3 "fizz" :col-4 "2017-02-04"}
+                    {:col-1 5 :col-2 1.5 :col-3 "buzz" :col-4 "2017-02-05"}
+                    {:col-1 "6" :col-2 "1.6" :col-3 "boo" :col-4 "FOO"}
+                    {:col-1 "bar" :col-2 "1.7" :col-3 "" :col-4 "2017-02-07"})))))
     (testing "CSV file loaded into a dataset - w/ a schema, return only coerced data"
       (is (= (csv-to-dataset "test-data/test-data-2.csv" TestData1
                              {:print-errors false :write-errors false :remove-errors true})

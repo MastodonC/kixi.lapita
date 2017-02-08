@@ -48,28 +48,27 @@
    If a schema is provided with a map of options, then you can return only
    data consistent with the schema and either print or save to file the data
    that fails data coercion.
-   Example of options {:print-errors true :write-errors false :remove-errors true}"
+   Example of options {:print-errors true :write-errors 'data/errors.csv' :remove-errors true}"
   ([filename]
    (ds/dataset (csv-to-maps-coll filename)))
   ;; Returns a mix of coerced data and data inconsistent w/ schema
   ([filename schema]
-   (let [all-data (csv-to-maps-coll filename)
-         coerced-data (sc/coerce-data-from-schema all-data schema)]
-     (ds/dataset coerced-data)))
+   (csv-to-dataset filename schema {}))
   ;; Specify options in the 3rd arg to print number of rows with inconsistent data,
   ;; write inconsistent data to file return only coerced data.
   ([filename schema {:keys [print-errors write-errors remove-errors]}]
    (let [all-data (csv-to-maps-coll filename)
-         coerced-data (sc/coerce-data-from-schema all-data schema)
-         errors (when (or print-errors write-errors) (sc/gather-errors coerced-data))]
+         data-after-coercion (sc/try-schema-coercion all-data schema)
+         all-data-after-coercion (sc/gather-all-data data-after-coercion)
+         errors (when (or print-errors write-errors) (sc/gather-errors data-after-coercion))]
      (when print-errors (println (format "There are %d rows with data coercion errors out of %d rows"
-                                         (count errors) (count coerced-data))))
+                                         (count errors) (count all-data-after-coercion))))
      (when write-errors
-       (write-csv! errors "data/records-with-data-coercion-issues.csv")
-       (println "The records with data coercion issues were saved in 'data/records-with-data-coercion-issues.csv'"))
+       (write-csv! errors write-errors)
+       (println (format "The records with data coercion issues were saved in %s" write-errors)))
      (if remove-errors
-       (ds/dataset (sc/filter-out-errors coerced-data))
-       (ds/dataset coerced-data)))))
+       (ds/dataset (sc/filter-out-errors data-after-coercion))
+       (ds/dataset all-data-after-coercion)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; kixi.lapita.preview ;; - Get a preview of the data
@@ -126,26 +125,3 @@
        (map (fn [[k v]] (merge k {output-col (mx/row-count v)})))
        (sort-by input-col)
        ds/dataset))
-
-;; Examples of uses
-(comment (def repairs-data (csv-to-maps-coll "data/historic-repairs-2014-2015.csv"))
-
-         (def repairs-ds (csv-to-dataset "data/historic-repairs-2014-2015.csv"))
-
-         (def repairs-ds-coerced (csv-to-dataset "data/historic-repairs-2014-2015.csv"
-                                                 sc/HousingRepairSchema))
-
-         (def repairs-ds-cleaned (csv-to-dataset "data/historic-repairs-2014-2015.csv"
-                                                 sc/HousingRepairSchema
-                                                 {:print-errors true
-                                                  :write-errors false
-                                                  :remove-errors true}))
-
-         (-> repairs-ds
-             (count-elements-in-column :property-reference :count-repairs-per-property)
-             (write-csv! "data/group-repairs-by-property.csv"))
-
-         (-> repairs-ds
-             (count-elements-in-column :property-reference :count-repairs-per-property)
-             (count-elements-in-column :count-repairs-per-property :occurences)
-             (write-csv! "data/summary-repairs-of-properties.csv")))
