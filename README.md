@@ -28,8 +28,9 @@ It uses functions from [`clojure.core.matrix.dataset`](https://github.com/mikera
 
 #### Read/write files to/from datasets
 
-* `load-csv` : To load data from a CSV file with or w/o schema coercion
-* `write-csv` : To write the content of a dataset to a CSV file
+* `csv-to-maps-coll` : To load data from a CSV file into a collection of maps
+* `csv-to-dataset` : To load data from a CSV file into a `core.matrix` dataset with or w/o schema coercion
+* `write-csv!` : To write the content of a dataset to a CSV file
 
 #### Preview the content of a dataset
 

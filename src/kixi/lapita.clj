@@ -141,11 +141,11 @@
                                                   :write-errors false
                                                   :remove-errors true}))
 
-         (-> repairs-data
+         (-> repairs-ds
              (count-elements-in-column :property-reference :count-repairs-per-property)
              (write-csv! "data/group-repairs-by-property.csv"))
 
-         (-> repairs-data
+         (-> repairs-ds
              (count-elements-in-column :property-reference :count-repairs-per-property)
              (count-elements-in-column :count-repairs-per-property :occurences)
              (write-csv! "data/summary-repairs-of-properties.csv")))
