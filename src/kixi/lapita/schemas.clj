@@ -1,39 +1,39 @@
 (ns kixi.lapita.schemas
   (:require [schema.core :as s]
-            [schema.coerce :as coerce]))
+            [schema.coerce :as coerce]
+            [schema-contrib.core :as c]
+            [schema.utils :as su]))
 
 ;; Create and valid schemas using Plumatic schemas (https://github.com/plumatic/schema)
-(defn make-ordered-ds-schema [col-vec]
-  {:column-names (mapv #(s/one (s/eq (first %)) (str (first %))) col-vec)
-   :columns (mapv #(s/one [(second %)] (format "col %s" (name (first %)))) col-vec)
-   s/Keyword s/Any})
 
-(defn make-row-schema
-  [col-schema]
-  (mapv (fn [s] (let [datatype (-> s :schema first)
-                      fieldname (:name s)]
-                  (s/one datatype fieldname)))
-        (:columns col-schema)))
+;; Note: When the data cannot be coerced using schema, we still want to return it.
+(defn try-schema-coercion
+  "Takes in data as a coll of maps and a schema.
+   Returns a map which separates coerced and non-coerced data."
+  [data schema]
+  (let [data-coercer (coerce/coercer schema coerce/string-coercion-matcher)]
+    (->> data
+         (map (fn [d] (let [coerced (data-coercer d)]
+                        (if (su/error? coerced)
+                          {:non-coerced (list d)}
+                          {:coerced (list coerced)}))))
+         (apply merge-with concat))))
 
-(defn make-col-names-schema
-  [col-schema]
-  (mapv (fn [s] (let [datatype (:schema s)
-                      fieldname (:name s)]
-                  (s/one datatype fieldname)))
-        (:column-names col-schema)))
+;; !!! I changed the way we coerce data for core.matrix datasets !!!
+;; When trying on a different dataset there might be an exception due
+;; to the order of the keys in the schema map vs the actual map of data
 
-(defn apply-row-schema
-  [col-schema csv-data]
-  (let [row-schema (make-row-schema col-schema)]
-    (map (coerce/coercer row-schema coerce/string-coercion-matcher)
-         (:columns csv-data))))
+;; Looking for inconsistencies (data missing or wrong type) using schema coercion errors
+(defn gather-errors
+  "Returns the non-coerced data records."
+  [data]
+  (:non-coerced data))
 
-(defn apply-col-names-schema
-  [col-schema csv-data]
-  (let [col-names-schema (make-col-names-schema col-schema)]
-    ((coerce/coercer col-names-schema coerce/string-coercion-matcher)
-     (:column-names csv-data))))
+(defn filter-out-errors
+  "Returns the coerced data records."
+  [data]
+  (:coerced data))
 
-(defn apply-schema-coercion [data schema]
-  {:column-names (apply-col-names-schema schema data)
-   :columns (vec (apply-row-schema schema data))})
+(defn gather-all-data
+  [data]
+  (concat (gather-errors data) (filter-out-errors data)))
