@@ -12,12 +12,11 @@
    Returns a map which separates coerced and non-coerced data."
   [data schema]
   (let [data-coercer (coerce/coercer schema coerce/string-coercion-matcher)]
-    (->> data
-         (map (fn [d] (let [coerced (data-coercer d)]
-                        (if (su/error? coerced)
-                          {:non-coerced (list d)}
-                          {:coerced (list coerced)}))))
-         (apply merge-with concat))))
+    (map (fn [d] (let [coerced (data-coercer d)]
+                   (if (su/error? coerced)
+                     (assoc d :status :non-coerced)
+                     (assoc coerced :status :coerced))))
+         data)))
 
 ;; !!! I changed the way we coerce data for core.matrix datasets !!!
 ;; When trying on a different dataset there might be an exception due
@@ -27,13 +26,17 @@
 (defn gather-errors
   "Returns the non-coerced data records."
   [data]
-  (:non-coerced data))
+  (->> data
+       (filter #(= (:status %) :non-coerced))
+       (map #(dissoc % :status))))
 
 (defn filter-out-errors
   "Returns the coerced data records."
   [data]
-  (:coerced data))
+  (->> data
+       (filter #(= (:status %) :coerced))
+       (map #(dissoc % :status))))
 
 (defn gather-all-data
   [data]
-  (concat (gather-errors data) (filter-out-errors data)))
+  (map #(dissoc % :status) data))

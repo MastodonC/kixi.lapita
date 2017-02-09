@@ -61,6 +61,7 @@
          data-after-coercion (sc/try-schema-coercion all-data schema)
          all-data-after-coercion (sc/gather-all-data data-after-coercion)
          errors (when (or print-errors write-errors) (sc/gather-errors data-after-coercion))]
+
      (when print-errors (println (format "There are %d rows with data coercion errors out of %d rows"
                                          (count errors) (count all-data-after-coercion))))
      (when write-errors
