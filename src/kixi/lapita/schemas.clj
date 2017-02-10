@@ -11,12 +11,13 @@
   "Takes in data as a coll of maps and a schema.
    Returns a map which separates coerced and non-coerced data."
   [data schema]
-  (let [data-coercer (coerce/coercer schema coerce/string-coercion-matcher)]
-    (map (fn [d] (let [coerced (data-coercer d)]
-                   (if (su/error? coerced)
-                     (assoc d :status :non-coerced)
-                     (assoc coerced :status :coerced))))
-         data)))
+  (let [data-coercer (coerce/coercer schema coerce/string-coercion-matcher)
+        coerce-or-return (map (fn [d] (let [coerced (data-coercer d)]
+                                        (if (su/error? coerced)
+                                          {:non-coerced d}
+                                          {:coerced coerced}))) data)]
+    (hash-map :non-coerced (vec (keep :non-coerced coerce-or-return))
+              :coerced (vec (keep :coerced coerce-or-return)))))
 
 ;; !!! I changed the way we coerce data for core.matrix datasets !!!
 ;; When trying on a different dataset there might be an exception due
@@ -26,17 +27,13 @@
 (defn gather-errors
   "Returns the non-coerced data records."
   [data]
-  (->> data
-       (filter #(= (:status %) :non-coerced))
-       (map #(dissoc % :status))))
+  (:non-coerced data))
 
 (defn filter-out-errors
   "Returns the coerced data records."
   [data]
-  (->> data
-       (filter #(= (:status %) :coerced))
-       (map #(dissoc % :status))))
+  (:coerced data))
 
 (defn gather-all-data
   [data]
-  (map #(dissoc % :status) data))
+  (concat (gather-errors data) (filter-out-errors data)))
