@@ -20,7 +20,7 @@
   (testing "Data coercion is performed when no data inconsistencies"
     (is (= (try-schema-coercion test-data-2 TestData)
            {:coerced '({:col-1 1, :col-2 "a", :col-3 1.1}
-                       {:col-1 2, :col-2 "b", :col-3 1.2}
+                       {:col-1 2, :col-2 "b", :col-3 1.2}q
                        {:col-1 3, :col-2 "c", :col-3 1.3})})))
   (testing "Data is not performed when the data is inconsistent"
     (is (= (try-schema-coercion test-data-1 TestData)

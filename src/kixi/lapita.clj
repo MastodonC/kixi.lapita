@@ -41,6 +41,32 @@
             headers (map format-key (first parsed-csv))]
         (map #(zipmap headers %) parsed-data)))))
 
+(defn csv-to-dataset*
+  "Loads csv file, returns a core.matrix dataset.
+   If a schema is provided alone, the data is coerced to the right type
+   unless it leads to a coercion error.
+   If a schema is provided with a map of options, then you can return only
+   data consistent with the schema and either print or save to file the data
+   that fails data coercion.
+   Example of options {:print-errors true :write-errors 'data/errors.csv' :remove-errors true}"
+  ;; Specify options in the 3rd arg to print number of rows with inconsistent data,
+  ;; write inconsistent data to file return only coerced data.
+  ([filename schema {:keys [print-errors write-errors remove-errors]}]
+   (let [all-data (with-open [in-file (io/reader filename)]
+                    (vec (data-csv/read-csv in-file)))
+         with-headers (update all-data 0 #(mapv format-key %))
+         data-after-coercion (sc/try-schema-coercion* with-headers schema)
+         all-data-after-coercion (sc/gather-all-data data-after-coercion)
+         errors (when (or print-errors write-errors) (sc/gather-errors data-after-coercion))]
+     (when print-errors (println (format "There are %d rows with data coercion errors out of %d rows"
+                                         (count errors) (count all-data-after-coercion))))
+     #_(when write-errors
+         (write-csv! errors write-errors)
+         (println (format "The records with data coercion issues were saved in %s" write-errors)))
+     (if remove-errors
+       (ds/dataset (first with-headers) (sc/filter-out-errors data-after-coercion))
+       (ds/dataset (first with-headers) all-data-after-coercion)))))
+
 (defn csv-to-dataset
   "Loads csv file, returns a core.matrix dataset.
    If a schema is provided alone, the data is coerced to the right type
