@@ -11,13 +11,13 @@
   "Takes in data as a coll of maps and a schema.
    Returns a map which separates coerced and non-coerced data."
   [data schema]
-  (let [data-coercer (coerce/coercer schema coerce/string-coercion-matcher)]
-    (->> data
-         (map (fn [d] (let [coerced (data-coercer d)]
-                        (if (su/error? coerced)
-                          {:non-coerced (list d)}
-                          {:coerced (list coerced)}))))
-         (apply merge-with concat))))
+  (let [data-coercer (coerce/coercer schema coerce/string-coercion-matcher)
+        coerce-or-return (map (fn [d] (let [coerced (data-coercer d)]
+                                        (if (su/error? coerced)
+                                          {:non-coerced d}
+                                          {:coerced coerced}))) data)]
+    (hash-map :non-coerced (vec (keep :non-coerced coerce-or-return))
+              :coerced (vec (keep :coerced coerce-or-return)))))
 
 ;; !!! I changed the way we coerce data for core.matrix datasets !!!
 ;; When trying on a different dataset there might be an exception due
