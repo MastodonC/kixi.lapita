@@ -16,7 +16,7 @@
 
 (defn transform-data-for-plot
   [ds x-data y-data]
-  (map #(vector %1 %2) x-data y-data))
+  (map vector x-data y-data))
 
 (defn calc-width-of-bar
   [x-data]
@@ -66,9 +66,9 @@
          y-data (wds/subset-ds ds :cols y-axis)
          all-data (transform-data-for-plot ds x-data y-data)
          bar-width (calc-width-of-bar x-data)
-         color-plot (if plot-color plot-color "#3D325A")
-         width-plot (if plot-width plot-width 600)
-         height-plot (if plot-height plot-height 320)]
+         color-plot (or plot-color "#3D325A")
+         width-plot (or plot-width 600)
+         height-plot (or plot-height 320)]
      (-> (viz-spec x-data y-data width-plot height-plot)
          (assoc :data [((bar-spec all-data 2 bar-width) 0 color-plot)])
          (viz/svg-plot2d-cartesian)
