@@ -11,7 +11,5 @@
                  [schema-contrib "0.1.3"]
                  [instaparse "1.4.3"]
                  [thi.ng/geom "0.0.908"]]
-  :main ^:skip-aot kixi.lapita
-  :target-path "target/%s"
   :profiles {:uberjar {:aot :all}
              :dev {:dependencies [[me.raynes/fs "1.4.6"]]}})
