@@ -56,12 +56,10 @@
              :label-style {:text-anchor "end"}})
    :grid   {:minor-y true}})
 
-(defn plot-bar-chart
-  ([ds x-axis y-axis output-path]
-   (plot-bar-chart ds x-axis y-axis output-path {:plot-color "#3D325A"
-                                                 :plot-width 600
-                                                 :plot-height 320}))
-  ([ds x-axis y-axis output-path {:keys [plot-color plot-width plot-height]}]
+(defn bar-chart
+  ([ds x-axis y-axis]
+   (bar-chart ds x-axis y-axis {}))
+  ([ds x-axis y-axis {:keys [plot-color plot-width plot-height]}]
    (let [x-data (wds/subset-ds ds :cols x-axis)
          y-data (wds/subset-ds ds :cols y-axis)
          all-data (transform-data-for-plot ds x-data y-data)
@@ -69,33 +67,15 @@
          color-plot (or plot-color "#3D325A")
          width-plot (or plot-width 600)
          height-plot (or plot-height 320)]
-     (-> (viz-spec x-data y-data width-plot height-plot)
-         (assoc :data [((bar-spec all-data 2 bar-width) 0 color-plot)])
-         (viz/svg-plot2d-cartesian)
-         (export-viz output-path width-plot height-plot)))))
+     {:plot (-> (viz-spec x-data y-data width-plot height-plot)
+                (assoc :data [((bar-spec all-data 2 bar-width) 0 color-plot)])
+                (viz/svg-plot2d-cartesian))
+      :width width-plot
+      :height height-plot})))
 
-(comment
-  (def test-data
-    (ds/dataset [{:col-1 2000 :col-2 43}
-                 {:col-1 2001 :col-2 47}
-                 {:col-1 2002 :col-2 62}
-                 {:col-1 2003 :col-2 43}
-                 {:col-1 2004 :col-2 54}
-                 {:col-1 2005 :col-2 57}
-                 {:col-1 2006 :col-2 48}
-                 {:col-1 2007 :col-2 58}
-                 {:col-1 2008 :col-2 65}
-                 {:col-1 2009 :col-2 68}
-                 {:col-1 2010 :col-2 71}
-                 {:col-1 2011 :col-2 74}
-                 {:col-1 2012 :col-2 78}
-                 {:col-1 2013 :col-2 63}
-                 {:col-1 2014 :col-2 69}
-                 {:col-1 2015 :col-2 80}
-                 {:col-1 2016 :col-2 96}
-                 {:col-1 2017 :col-2 85}
-                 {:col-1 2018 :col-2 78}
-                 {:col-1 2019 :col-2 96}]))
-
-  (plot-bar-chart test-data :col-1 :col-2 "data/test-chart.svg"
-                  {:plot-width 900 :plot-height 500}))
+(defn plot-bar-chart
+  ([ds x-column y-column filepath]
+   (plot-bar-chart ds x-column y-column filepath {}))
+  ([ds x-column y-column filepath map-options]
+   (let [{:keys [plot width height]} (bar-chart ds x-column y-column map-options)]
+     (export-viz plot filepath width height))))
