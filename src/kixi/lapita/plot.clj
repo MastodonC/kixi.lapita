@@ -25,50 +25,91 @@
     (and (> (count x-data) 5) (<= (count x-data) 20)) 20
     :else 10))
 
+
+(defn shape [flip-point flip-point-height]
+  (fn [[ax ay :as a] [bx by :as b] [domain-x domain-y]]
+    (println a b domain-x domain-y)
+    (if (> flip-point domain-y)
+      (let [diff (- ay flip-point-height)
+            new-a [ax flip-point-height]
+            new-b [bx (+ flip-point-height diff)]]
+        (println new-a new-b)
+        (svg/line new-a new-b))
+      (svg/line a [bx flip-point-height]))))
+
 (defn bar-spec
-  [data num width]
+  [data num width flip-point flip-point-height]
   (fn [idx col]
     {:values     data
      :attribs    {:stroke       col
                   :stroke-width (str (dec width) "px")}
+     :shape (shape flip-point flip-point-height)
      :layout     viz/svg-bar-plot
      :interleave num
      :bar-width  width
      :offset     idx}))
 
+(defn calc-y-range [plot-height]
+  [(- plot-height 40) 20])
+
+(defn calc-y-domain [y-data]
+  (let [lower-y (let [min-y (reduce min y-data)]
+                  (if (neg? min-y) (+ min-y (* 0.2 min-y)) 0))
+        upper-y (let [max-y (reduce max y-data)] (+ (* 0.2 max-y) max-y))]
+    [lower-y upper-y]))
+
 (defn viz-spec
   [x-data y-data plot-width plot-height]
-  {:x-axis (viz/linear-axis
-            {:domain [(let [min-x (reduce min x-data)]
-                        (if (= min-x 0) 0 (dec min-x)))
-                      (inc (reduce max x-data))]
-             :range  [50 (- plot-width 20)]
-             :major  1
-             :pos    (- plot-height 40)
-             :label  (viz/default-svg-label int)})
-   :y-axis (viz/linear-axis
-            {:domain      [0 (+ 5 (reduce max y-data))]
-             :range       [(- plot-height 40) 20]
-             :major       10
-             :minor       5
-             :pos         50
-             :label-dist  15
-             :label-style {:text-anchor "end"}})
-   :grid   {:minor-y true}})
+  (let [lower-x (let [min-x (reduce min x-data)]
+                  (if (= min-x 0) 0 (dec min-x)))
+        upper-x (inc (reduce max x-data))]
+    {:x-axis (viz/linear-axis
+              {:domain [lower-x upper-x]
+               :range  [50 (- plot-width 20)]
+               :major  1
+               :pos    (- plot-height 40) ;;lower-y
+               :label  (viz/default-svg-label int)})
+     :y-axis (viz/linear-axis
+              {:domain      (calc-y-domain y-data)
+               :range       (calc-y-range plot-height)
+               :major       10
+               :minor       5
+               :pos         50
+               :label-dist  15
+               :label-style {:text-anchor "end"}})
+     :grid   {:minor-y true}}))
+
+(defn calc-flip-point
+  [flip-point plot-height y-data]
+  (let [[top-y bottom-y] (calc-y-range plot-height)
+        [lower-y upper-y] (calc-y-domain y-data)
+        fp-ratio (/ (- flip-point lower-y) (- upper-y lower-y))
+        range-ratio-applied (+ (* (- top-y bottom-y) fp-ratio) bottom-y)]
+    range-ratio-applied))
+
+;; (defn calc-flip-point*
+;;   [flip-point plot-height y-data]
+;;   (let [[lower-range upper-range] (calc-y-range plot-height)
+;;         [lower-domain upper-domain] (calc-y-domain y-data)
+;;         multiplier (/ (- upper-domain lower-domain) (- upper-range lower-range))]
+;;     (lower-domain)))
 
 (defn bar-chart
   ([ds x-axis y-axis]
    (bar-chart ds x-axis y-axis {}))
   ([ds x-axis y-axis {:keys [plot-color plot-width plot-height]}]
-   (let [x-data (wds/subset-ds ds :cols x-axis)
-         y-data (wds/subset-ds ds :cols y-axis)
+   (let [x-data (sort (wds/subset-ds ds :cols x-axis))
+         y-data (sort (wds/subset-ds ds :cols y-axis))
          all-data (transform-data-for-plot ds x-data y-data)
          bar-width (calc-width-of-bar x-data)
          color-plot (or plot-color "#3D325A")
          width-plot (or plot-width 600)
-         height-plot (or plot-height 320)]
+         height-plot (or plot-height 320)
+         flip-point 0
+         flip-point-height (calc-flip-point flip-point height-plot y-data)]
      {:plot (-> (viz-spec x-data y-data width-plot height-plot)
-                (assoc :data [((bar-spec all-data 2 bar-width) 0 color-plot)])
+                (assoc :data [((bar-spec all-data 1 bar-width flip-point
+                                         flip-point-height) 0 color-plot)])
                 (viz/svg-plot2d-cartesian))
       :width width-plot
       :height height-plot})))
