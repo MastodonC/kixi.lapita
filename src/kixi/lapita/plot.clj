@@ -28,12 +28,10 @@
 
 (defn shape [flip-point flip-point-height]
   (fn [[ax ay :as a] [bx by :as b] [domain-x domain-y]]
-    (println a b domain-x domain-y)
     (if (> flip-point domain-y)
       (let [diff (- ay flip-point-height)
             new-a [ax flip-point-height]
             new-b [bx (+ flip-point-height diff)]]
-        (println new-a new-b)
         (svg/line new-a new-b))
       (svg/line a [bx flip-point-height]))))
 
@@ -83,16 +81,9 @@
   [flip-point plot-height y-data]
   (let [[top-y bottom-y] (calc-y-range plot-height)
         [lower-y upper-y] (calc-y-domain y-data)
-        fp-ratio (/ (- flip-point lower-y) (- upper-y lower-y))
+        fp-ratio (- 1 (/ (- flip-point lower-y) (- upper-y lower-y)))
         range-ratio-applied (+ (* (- top-y bottom-y) fp-ratio) bottom-y)]
     range-ratio-applied))
-
-;; (defn calc-flip-point*
-;;   [flip-point plot-height y-data]
-;;   (let [[lower-range upper-range] (calc-y-range plot-height)
-;;         [lower-domain upper-domain] (calc-y-domain y-data)
-;;         multiplier (/ (- upper-domain lower-domain) (- upper-range lower-range))]
-;;     (lower-domain)))
 
 (defn bar-chart
   ([ds x-axis y-axis]
