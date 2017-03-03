@@ -14,10 +14,6 @@
        (svg/serialize)
        (spit path)))
 
-(defn transform-data-for-plot
-  [ds x-data y-data]
-  (map vector x-data y-data))
-
 (defn calc-width-of-bar
   [x-data]
   (cond
@@ -92,18 +88,21 @@
          x-min (reduce min x-data)
          x-max (reduce max x-data)
          y-data (sort (wds/subset-ds ds :cols y-axis))
-         all-data (transform-data-for-plot ds x-data y-data)
+         all-data (map vector x-data y-data)
          bar-width (calc-width-of-bar x-data)
          color-plot (or plot-color "#3D325A")
          width-plot (or plot-width 600)
          height-plot (or plot-height 320)
-         flip-point 0
+         flip-point 0 ;; All bars start at 0 (even when y values negative)
          flip-point-height (calc-flip-point flip-point height-plot y-data)
          flip-line {:values [[(dec x-min) 0] [(inc x-max) 0]]
                     :attribs {:fill "none" :stroke "#4c4a4a"}
                     :layout viz/svg-line-plot}
-         plot ((bar-spec all-data 1 bar-width flip-point
-                         flip-point-height) 0 color-plot)
+         plot ((bar-spec all-data 1 ;; Plot 1 data series for now
+                         bar-width flip-point
+                         flip-point-height) 0 ;; Index of data series is 0
+                                            color-plot)
+         ;; If y values negative, add line at y = 0
          plot-data (if (neg? (reduce min y-data)) [plot flip-line] [plot])]
      {:plot (-> (viz-spec x-data y-data width-plot height-plot)
                 (assoc :data plot-data)
