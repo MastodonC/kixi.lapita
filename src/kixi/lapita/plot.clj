@@ -25,7 +25,6 @@
     (and (> (count x-data) 5) (<= (count x-data) 20)) 20
     :else 10))
 
-
 (defn shape [flip-point flip-point-height]
   (fn [[ax ay :as a] [bx by :as b] [domain-x domain-y]]
     (if (> flip-point domain-y)
@@ -59,7 +58,7 @@
 (defn viz-spec
   [x-data y-data plot-width plot-height]
   (let [lower-x (let [min-x (reduce min x-data)]
-                  (if (= min-x 0) 0 (dec min-x)))
+                  (if (zero? min-x) 0 (dec min-x)))
         upper-x (inc (reduce max x-data))]
     {:x-axis (viz/linear-axis
               {:domain [lower-x upper-x]
