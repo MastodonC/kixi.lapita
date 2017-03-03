@@ -90,6 +90,8 @@
    (bar-chart ds x-axis y-axis {}))
   ([ds x-axis y-axis {:keys [plot-color plot-width plot-height]}]
    (let [x-data (sort (wds/subset-ds ds :cols x-axis))
+         x-min (reduce min x-data)
+         x-max (reduce max x-data)
          y-data (sort (wds/subset-ds ds :cols y-axis))
          all-data (transform-data-for-plot ds x-data y-data)
          bar-width (calc-width-of-bar x-data)
@@ -97,10 +99,15 @@
          width-plot (or plot-width 600)
          height-plot (or plot-height 320)
          flip-point 0
-         flip-point-height (calc-flip-point flip-point height-plot y-data)]
+         flip-point-height (calc-flip-point flip-point height-plot y-data)
+         flip-line {:values [[(dec x-min) 0] [(inc x-max) 0]]
+                    :attribs {:fill "none" :stroke "#4c4a4a"}
+                    :layout viz/svg-line-plot}
+         plot ((bar-spec all-data 1 bar-width flip-point
+                         flip-point-height) 0 color-plot)
+         plot-data (if (neg? (reduce min y-data)) [plot flip-line] [plot])]
      {:plot (-> (viz-spec x-data y-data width-plot height-plot)
-                (assoc :data [((bar-spec all-data 1 bar-width flip-point
-                                         flip-point-height) 0 color-plot)])
+                (assoc :data plot-data)
                 (viz/svg-plot2d-cartesian))
       :width width-plot
       :height height-plot})))
