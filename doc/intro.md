@@ -24,6 +24,19 @@ The third namespace [kixi.lapita.schemas](https://github.com/MastodonC/kixi.lapi
 
 ### `kixi.lapita` namespace
 
+#### External dependencies
+* The expected file format is comma-separated values (CSV) that we handle using the library [clojure.data.csv](https://github.com/clojure/data.csv).
+* We use the Clojure I/O library [clojure.java.io](https://clojure.github.io/clojure/clojure.java.io-api.html).
+* Despite the recent popularity of [clojure.spec](https://clojure.org/news/2016/05/23/introducing-clojure-spec) we are currently using schema coercion with `schema.coerce` from [plumatic/chema](https://github.com/plumatic/schema).
+* We currently prioritise working with [`core.matrix`](https://github.com/mikera/core.matrix) data structures over classic Clojure data structures (like collections of maps). For that we use [clojure.core.matrix](https://github.com/mikera/core.matrix/blob/develop/src/main/clojure/clojure/core/matrix.cljc) and [clojure.core.matrix.dataset](https://github.com/mikera/core.matrix/blob/develop/src/main/clojure/clojure/core/matrix/dataset.clj).
+* To manipulate core.matrix datasets, on top of the functions available in the library we use functions from [`witan.datasets`](https://github.com/MastodonC/witan.workspace-api/blob/master/src/witan/datasets.clj) developed at Mastodon C.
+
+#### I/O related functions
+* Write data to file: `write-csv!`
+* Read data as collection of maps: `csv-to-maps-coll`
+* Read data as a `core.matrix` dataset: `csv-to-dataset`
+
+
 ### `kixi.lapita.plot` namespace
 
 ## What needs to be done?
