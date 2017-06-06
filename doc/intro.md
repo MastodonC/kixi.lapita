@@ -33,9 +33,20 @@ The third namespace [kixi.lapita.schemas](https://github.com/MastodonC/kixi.lapi
 
 #### I/O related functions
 * Write data to file: `write-csv!`
-* Read data as collection of maps: `csv-to-maps-coll`
+* Read data as Clojure data structure: `csv-to-maps-coll`
 * Read data as a `core.matrix` dataset: `csv-to-dataset`
+This function can be used without schema coercion or with schema coercion.
+When schema coercion fails it returns a data structure containing the error message(s). This means that it's easy to miss the coercion fail and work with broken data.
+Here we try to give more flexibility and allow to continue working on the data whether it coerces or not, while being aware of when the coercion failed.
+When used with a schema, the default behaviour is to return the whole data where whatever passed the coercion is coerced and the rest is still in its initial state.
+There are options to see the error message, to write the uncoerced data to a file, or to return the coerce data without the uncoerced data.
 
+#### Data preview functions
+* Provides information on the data: `info`
+This function returns a map containing the columns names, the number of columns and the number of rows.
+* Have a pick at the data: `head`
+Like in R or Python/Pandas, it can be useful while working on data to regularly check the transformations work by have a look at a small part of the dataset.
+Here the default is to return the first five rows, but the number of rows to be returned can be customised.
 
 ### `kixi.lapita.plot` namespace
 
