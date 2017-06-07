@@ -234,9 +234,19 @@ Note: The tasks associated should be under the [`new-feature`](https://github.co
 * `kixi.lapita.plot`
 New types of plots are needed like histograms, scatter/line plot or even horizontal bar chart.
 
-* `kixi.lapita.io`
-
 * `kixi.lapita.preview`
 To keep the `info` function as a helper function only (to get an overview of it), the functionality of getting column names and the number of columns/rows should be returned by external functions (like in R or Python/Pandas). [See issue #26](https://github.com/MastodonC/kixi.lapita/issues/26)
+
+There's a `describe` function in this part of the code. It's currently non functional, but it should ultimately return information on the values within the numeric columns. See the description of [issue #2](https://github.com/MastodonC/kixi.lapita/issues/2) for more details on the outomce of this function. The `maximum` and `minimum` functions (taken from another repository) are supposed to be called by `describe`. Those are functions to use with transducers, meaning they would be working on Clojure data structures but not core.matrix dataset. The decision to use transducers is for the function to be fast even on large sets of data. However it still needs to be determined how this would work with core.matrix.datasets.
+
+* `kixi.lapita.transform`
+The users should be able to delete data, so a `delete` or `drop` function should be added. [See issue #23](https://github.com/MastodonC/kixi.lapita/issues/23)
+
+Another basic functionality is being able to group data. This [issue #21](https://github.com/MastodonC/kixi.lapita/issues/21) is actually to add in a very useful fn from another library: [`gather-by-year`](https://github.com/MastodonC/witan.phyrexian/blob/master/src/witan/phyrexian/utils.clj#L105). This is very useful transformation when each year is a column name of a dataset and one want to have a column called "year" with each year as a value of that column.
+
+* general changes
+We currently do not use [clojure.spec]() but it has been advised as a efficient way to validate the functions arguments. [See issue #19](https://github.com/MastodonC/kixi.lapita/issues/19)
+
+The aim of this library is to be used on both core.matrix datasets and Clojure data structure. There are add ins for the current functions of new functions to write to make that possible. [See issue #7](https://github.com/MastodonC/kixi.lapita/issues/7)
 
 ## Tutorial
