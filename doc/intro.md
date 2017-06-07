@@ -9,7 +9,8 @@
 	* [Data preview functions](#data-preview-functions)
 	* [Data transformation functions](#data-transformation-functions)
   * [`kixi.lapita.plot` namespace](#kixilapitaplot-namespace)
-    * [dependencies for kixi.lapita.plot](#dependencies-for-kixilapitaplot)
+    * [Dependencies for kixi.lapita.plot](#dependencies-for-kixilapitaplot)
+	* [Plotting function](#plotting-function)
 * [What needs to be done?](#what-needs-to-be-done)
 * [Try it!](#try-it)
 
@@ -113,6 +114,11 @@ It takes in a dataset and outputs a new dataset with the specified column name a
 #### Dependencies for `kixi.lapita.plot`
 To create plots we wanted to use a sub-library within the [thi.ng](http://thi.ng/) project as they are powerful and flexible.
 Here [`thi.ng/geom`](https://github.com/thi-ng/geom) is better suited for the purpose of creating plots. It is a plotting library that gives us tools to create plotting tools, but it doesn't come ready out of the box.
+
+#### Plotting function
+For the moment there's one function to create a vertical bar chart: `plot-bar-chart`.
+This function expects data as a core.matrix dataset, columns names for the x-axis values and the y-axis values and the name for the resulting plot file.
+There are additional optional options to customise the colour, the width and height of the plot.
 ```Clojure
 > test-data
 
@@ -128,12 +134,7 @@ Here [`thi.ng/geom`](https://github.com/thi-ng/geom) is better suited for the pu
 > (plot-bar-chart test-data :col-1 :col-2 "test-plot")
 nil
 ```
-![plot test-data](img/test-plot)
-
-#### Plotting function
-For the moment there's one function to create a vertical bar chart: `plot-bar-chart`.
-This function expects data as a core.matrix dataset, columns names for the x-axis values and the y-axis values and the name for the resulting plot file.
-There are additional optional options to customise the colour, the width and height of the plot.
+![plot test-data](img/test-plot.jpg)
 
 ## What needs to be done?
 
