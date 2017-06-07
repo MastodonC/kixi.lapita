@@ -88,11 +88,47 @@ Here the default is to return the first five rows, but the number of rows to be 
 #### Data transformation functions
 `count-elements-in-column` isn't particularly well named, but it's role is, for a given column, to count the number of items for each type of items in this column.
 It takes in a dataset and outputs a new dataset with the specified column name and a count column.
+```Clojure
+> other-test-ds
+
+| :col-1 | :col-2 | :col-3 |
+|--------+--------+--------|
+|      1 |      a |    1.1 |
+|      2 |      b |    1.2 |
+|      3 |      a |    1.3 |
+|      4 |      c |    1.4 |
+|      5 |      b |    1.5 |
+|      6 |      a |    1.6 |
+
+> (count-elements-in-column other-test-ds :col-2 :occurences-col-2)
+
+| :col-2 | :occurences-col-2 |
+|--------+-------------------|
+|      a |                 3 |
+|      b |                 2 |
+|      c |                 1 |
+```
 
 ### `kixi.lapita.plot` namespace
 #### Dependencies for `kixi.lapita.plot`
 To create plots we wanted to use a sub-library within the [thi.ng](http://thi.ng/) project as they are powerful and flexible.
 Here [`thi.ng/geom`](https://github.com/thi-ng/geom) is better suited for the purpose of creating plots. It is a plotting library that gives us tools to create plotting tools, but it doesn't come ready out of the box.
+```Clojure
+> test-data
+
+| :col-1 | :col-2 |
+|--------+--------|
+|   2000 |     43 |
+|   2001 |     47 |
+|   2002 |     62 |
+|   2003 |     43 |
+|   2004 |     54 |
+|   2005 |     57 |
+
+> (plot-bar-chart test-data :col-1 :col-2 "test-plot")
+nil
+```
+![plot test-data](img/test-plot)
 
 #### Plotting function
 For the moment there's one function to create a vertical bar chart: `plot-bar-chart`.
