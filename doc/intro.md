@@ -5,12 +5,12 @@
 * [Documentation](#documentation)
   * [`kixi.lapita` namespace](#kixilapita-namespace)
     * [dependencies for kixi.lapita](#dependencies-for-kixilapita)
-	* [I/O related functions](#io-related-functions): `write-csv!` | `csv-to-maps-coll` | `csv-to-dataset`
-	* [Data preview functions](#data-preview-functions): `info` | `head`
-	* [Data transformation functions](#data-transformation-functions): `count-elements-in-column`
+	* [I/O related functions](#io-related-functions): [`write-csv!`](#write-csv) | [`csv-to-maps-coll`](#csv-to-maps-coll) | [`csv-to-dataset`](#csv-to-dataset)
+	* [Data preview functions](#data-preview-functions): [`info`](#info) | [`head`](#head)
+	* [Data transformation functions](#data-transformation-functions): [`count-elements-in-column`](#count-elements-in-column)
   * [`kixi.lapita.plot` namespace](#kixilapitaplot-namespace)
     * [Dependencies for kixi.lapita.plot](#dependencies-for-kixilapitaplot)
-	* [Plotting function](#plotting-function): `plot-bar-chart`
+	* [Plotting function](#plotting-function): [`plot-bar-chart`](#plot-bar-chart)
 * [Future improvements](#future-improvements)
   * [Organise namespaces](#organise-namespaces)
   * [Add features](#add-features)
@@ -171,6 +171,9 @@ nil
 ![plot test-data](img/test-plot-2.jpg)
 
 ## Future improvements
+The library being very basic for now there are a lot of improvements to expect.
+The list of improvements currently lives in the backlog of the project's [Waffle board](#https://waffle.io/MastodonC/kixi.lapita). Those populate the [issues](#https://github.com/mastodonc/kixi.lapita/issues) of the github repo. So more feature ideas or fixes can be added to either of those pages.
+
 ### Organise namespaces
 
 ### Add features
