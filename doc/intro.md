@@ -63,7 +63,7 @@ Here we try to give more flexibility and allow to continue working on the data w
 When used with a schema, the default behaviour is to return the whole data where whatever passed the coercion is coerced and the rest is still in its initial state.
 There are options to see the error message, to write the uncoerced data to a file, or to return the coerce data without the uncoerced data.
 
-**Without schema coercion**
+ * Without schema coercion
 ```Clojure
 > (csv-to-dataset "test-file.csv")
 
@@ -74,8 +74,38 @@ There are options to see the error message, to write the uncoerced data to a fil
 |      3 |      c |    1.3 |
 
 ```
-**With schema coercion**
+ * With schema coercion and options
 ```Clojure
+> (use '[schema.core :as s])
+nil
+> (use '[schema-contrib.core :as c])
+nil
+
+> (def TestData1
+    {:col-1 s/Int
+     :col-2 java.lang.Double
+     :col-3 s/Str
+     :col-4 c/Date})
+#'kixi.lapita/TestData1
+
+> (csv-to-dataset "test-data/test-data-1.csv"
+                  TestData1
+                  {:print-errors true
+                   :write-errors "test-data/errors.csv"
+                   :remove-errors false})
+
+There are 0 rows with data coercion errors out of 7 rows
+The records with data coercion issues were saved in test-data/errors.csv
+
+| :col-1 | :col-2 | :col-3 |     :col-4 |
+|--------+--------+--------+------------|
+|      1 |    1.1 |    foo | 2017-02-01 |
+|      2 |    1.2 |    bar | 2017-02-02 |
+|      3 |    1.3 |    baz | 2017-02-03 |
+|      4 |    1.4 |   fizz | 2017-02-04 |
+|      5 |    1.5 |   buzz | 2017-02-05 |
+|      6 |    1.6 |    boo | 2017-02-06 |
+|      7 |    1.7 |    wiz | 2017-02-07 |
 ```
 
 #### Data preview functions
