@@ -13,7 +13,8 @@
 	* [Plotting function](#plotting-function): [`plot-bar-chart`](#plot-bar-chart)
 * [Future improvements](#future-improvements)
   * [Organise namespaces](#organise-namespaces)
-  * [Add features](#add-features)
+  * [Improve current features](#improve-current-features)
+  * [Add new features](#add-new-features)
 * [Tutorial](#tutorial)
 
 ## Project background
@@ -202,10 +203,40 @@ nil
 
 ## Future improvements
 The library being very basic for now there are a lot of improvements to expect.
-The list of improvements currently lives in the backlog of the project's [Waffle board](#https://waffle.io/MastodonC/kixi.lapita). Those populate the [issues](#https://github.com/mastodonc/kixi.lapita/issues) of the github repo. So more feature ideas or fixes can be added to either of those pages.
+The list of improvements currently lives in the backlog of the project's [Waffle board](#https://waffle.io/MastodonC/kixi.lapita). Those populate the [issues](https://github.com/mastodonc/kixi.lapita/issues) of the github repo. So more feature ideas or fixes can be added to either of those pages.
 
 ### Organise namespaces
+Note: The tasks associated should be under the [`refactor` label](https://github.com/MastodonC/kixi.lapita/labels/refactor) on Github/Waffle.
 
-### Add features
+This is aimed at splitting the `kixi.lapita` namespace into several namespaces based on the role of the functions.
+The namespace is currently divided in three part using comments. Each part would become a new namesapce:
+* `kixi.lapita.io` namespace would contain all the functions to read/write files
+* `kixi.lapita.preview` namespace would contain all the functions to get easily get information on the content of the data
+* `kixi.lapita.transform` namespace would contain all the functions to transform data
+
+This reorganisation of the repository is captured in this [issue #3](https://github.com/MastodonC/kixi.lapita/issues/3).
+
+### Improve current features
+Note: The tasks associated should be under the [`improve-feature`](https://github.com/MastodonC/kixi.lapita/labels/improve-feature) label on Github/Waffle.
+
+* `kixi.lapita.plot`
+The immediate next step will be to improve on the vertical bar chart starting by enabling the user to plot multiple data series. [See issue #24](https://github.com/MastodonC/kixi.lapita/issues/24)
+
+* `kixi.lapita.io`
+The function `csv-to-dataset` is quite slow when doing a schema validation especially when trying to identify errors in the schema validation process. An effort has been started to optimise that process on the branch [`experiment/perf-improvements`](https://github.com/MastodonC/kixi.lapita/tree/experiment/perf-improvements). [See issue #13](https://github.com/MastodonC/kixi.lapita/issues/13)
+
+* `kixi.lapita.preview`
+The `info` function is missing some functionality. It will ultimately return a pretty print of the information and return extra information like the type of data for each column of the data structure. [See issue #1](https://github.com/MastodonC/kixi.lapita/issues/1)
+
+### Add new features
+Note: The tasks associated should be under the [`new-feature`](https://github.com/MastodonC/kixi.lapita/labels/new-feature) label on Github/Waffle.
+
+* `kixi.lapita.plot`
+New types of plots are needed like histograms, scatter/line plot or even horizontal bar chart.
+
+* `kixi.lapita.io`
+
+* `kixi.lapita.preview`
+To keep the `info` function as a helper function only (to get an overview of it), the functionality of getting column names and the number of columns/rows should be returned by external functions (like in R or Python/Pandas). [See issue #26](https://github.com/MastodonC/kixi.lapita/issues/26)
 
 ## Tutorial
