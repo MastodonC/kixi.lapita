@@ -15,7 +15,7 @@
   * [Organise namespaces](#organise-namespaces)
   * [Improve current features](#improve-current-features)
   * [Add new features](#add-new-features)
-* [Tutorial](#tutorial)
+* [Try `kixi.lapita`](#try-kixilapita)
 
 ## Project background
 When it comes to data analysis (manipulating datasets and plotting data) we have no set tool at Mastodon C.
@@ -245,8 +245,15 @@ The users should be able to delete data, so a `delete` or `drop` function should
 Another basic functionality is being able to group data. This [issue #21](https://github.com/MastodonC/kixi.lapita/issues/21) is actually to add in a very useful fn from another library: [`gather-by-year`](https://github.com/MastodonC/witan.phyrexian/blob/master/src/witan/phyrexian/utils.clj#L105). This is very useful transformation when each year is a column name of a dataset and one want to have a column called "year" with each year as a value of that column.
 
 * general changes
-We currently do not use [clojure.spec]() but it has been advised as a efficient way to validate the functions arguments. [See issue #19](https://github.com/MastodonC/kixi.lapita/issues/19)
+We currently do not use [clojure.spec](https://clojure.org/news/2016/05/23/introducing-clojure-spec) but it has been advised as a efficient way to validate the functions arguments. [See issue #19](https://github.com/MastodonC/kixi.lapita/issues/19)
 
 The aim of this library is to be used on both core.matrix datasets and Clojure data structure. There are add ins for the current functions of new functions to write to make that possible. [See issue #7](https://github.com/MastodonC/kixi.lapita/issues/7)
 
-## Tutorial
+## Try `kixi.lapita`
+At the moment `kixi.lapita` hasn't been released on Clojars, yet. So in order to use it, you'll need to have a local copy of the [github repository](https://github.com/MastodonC/kixi.lapita/tree/master).
+
+Once you have cloned the project, you can either:
+* have a go from your repl within `kixi.lapita project`, or
+* work from a separate project and use `kixi.lapita` as a dependency:
+1) from your terminal go to `kixi.lapita` directory and run `$ lein compile`
+2) create a new Clojure project and add `[kixi.lapita "0.1.0-SNAPSHOT"]` to your dependencies in your `project.clj`.
