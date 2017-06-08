@@ -4,12 +4,12 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [net.mikera/core.matrix "0.55.0"]
-                 [witan.workspace-api "0.1.20"]
-                 [prismatic/schema "1.1.3"]
-                 [org.clojure/data.csv "0.1.3"]
-                 [schema-contrib "0.1.3"]
-                 [instaparse "1.4.3"]
-                 [thi.ng/geom "0.0.908"]]
+                 [net.mikera/core.matrix "0.60.3"]
+                 [witan.workspace-api "0.1.23"]
+                 [prismatic/schema "1.1.6"]
+                 [org.clojure/data.csv "0.1.4"]
+                 [schema-contrib "0.1.5"]
+                 [instaparse "1.4.7"]
+                 [thi.ng/geom "0.0.1062"]]
   :profiles {:uberjar {:aot :all}
              :dev {:dependencies [[me.raynes/fs "1.4.6"]]}})

@@ -78,9 +78,9 @@
   "Takes in a dataset, return information on the columns,
    number of rows and columns."
   [ds]
-  {:column-names (:column-names ds)
-   :num-rows (first (:shape ds))
-   :num-columns (second (:shape ds))})
+  {:column-names (ds/column-names ds)
+   :num-rows (count ds)
+   :num-columns (first (map count ds))})
 
 (defn head
   "Look up the top n rows of the dataset.
