@@ -1,6 +1,7 @@
 # kixi.lapita
 
 [![CircleCI](https://circleci.com/gh/MastodonC/kixi.lapita.svg?style=svg)](https://circleci.com/gh/MastodonC/kixi.lapita)
+[![Dependencies Status](https://jarkeeper.com/MastodonC/kixi.lapita/status.svg)](https://jarkeeper.com/MastodonC/kixi.lapita)
 
 ## For (data) explorers!
 
@@ -9,17 +10,20 @@ They were expert in seamanship and navigation, reaching out and finding islands 
 
 See [wikipedia](https://en.wikipedia.org/wiki/Lapita_culture)
 
+**`Kixi.lapita` is a Clojure library to preview, transform and plot your data.**
+
 ### Status
 
 See progress:  [![Stories in progress](https://badge.waffle.io/MastodonC/kixi.lapita.svg?label=in%20progress&title=In%20progress)](http://waffle.io/MastodonC/kixi.lapita)
 
-One namespace `kixi.lapita` with functions to:
-
+There are currently functions to:
 * read/write files to/from [`core.matrix` datasets](https://github.com/mikera/core.matrix/blob/develop/src/main/clojure/clojure/core/matrix/dataset.clj)
 * preview the content of a dataset
 * transform data in a dataset
+* plot data with a vertical bar chart
 
-### Description
+### Features
+For more details, read the [documentation](doc/intro.md).
 
 This project uses `core.matrix` datasets as a data structure to handle the data.
 
@@ -42,9 +46,23 @@ It uses functions from [`clojure.core.matrix.dataset`](https://github.com/mikera
 
 * `count-elements-in-column` : To output the count of each element in a column
 
-## License
+#### Visualise data with a bar chart
 
-Copyright © 2017 FIXME
+* `plot-bar-chart` : To plot data from the columns of a dataset. It outputs a svg file.
+
+### Installation
+
+At the moment `kixi.lapita` is not available on Clojars, but you can clone the project to try it locally. See [instructions](doc/intro.md#try-kixilapita).
+
+### Contribute
+
+* Source code: [github.com/MastodonC/kixi.lapita](https://github.com/MastodonC/kixi.lapita)
+* Issue tracker: [github.com/MastodonC/kixi.lapita/issues](https://github.com/MastodonC/kixi.lapita/issues)
+* Waffle board: [waffle.io/MastodonC/kixi.lapita](https://waffle.io/MastodonC/kixi.lapita)
+
+### License
+
+Copyright © 2017 Mastodon C Ltd
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
