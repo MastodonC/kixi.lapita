@@ -4,7 +4,7 @@
 * [Project background](#project-background)
 * [Documentation](#documentation)
   * [`kixi.lapita` namespace](#kixilapita-namespace)
-    * [dependencies for kixi.lapita](#dependencies-for-kixilapita)
+    * [Dependencies for kixi.lapita](#dependencies-for-kixilapita)
 	* [I/O related functions](#io-related-functions): [`write-csv!`](#write-csv) | [`csv-to-maps-coll`](#csv-to-maps-coll) | [`csv-to-dataset`](#csv-to-dataset)
 	* [Data preview functions](#data-preview-functions): [`info`](#info) | [`head`](#head)
 	* [Data transformation functions](#data-transformation-functions): [`count-elements-in-column`](#count-elements-in-column)
@@ -21,7 +21,7 @@
 When it comes to data analysis (manipulating datasets and plotting data) we have no set tool at Mastodon C.
 A lot of people tend to use R or sometimes Python. But as we're all proficient in Clojure, it makes sense for us to use this language.
 
-We haven't identified a Clojure library that would suit our needs except from Incanter. And we are worried that Incanter is not fully maintained anymore.
+We haven't identified a Clojure library that would suit our needs except for Incanter. And we are worried that Incanter is not fully maintained anymore.
 Therefore instead of maintaining a rather large code base, we wish to create our own small library to use internally and to be used by other Clojurians.
 
 This project was started in early 2017 in parallel with a client's project that would have been a good use case for it.
@@ -36,7 +36,7 @@ The third namespace [kixi.lapita.schemas](https://github.com/MastodonC/kixi.lapi
 #### Dependencies for `kixi.lapita`
 * The expected file format is comma-separated values (CSV) that we handle using the library [clojure.data.csv](https://github.com/clojure/data.csv).
 * We use the Clojure I/O library [clojure.java.io](https://clojure.github.io/clojure/clojure.java.io-api.html).
-* Despite the recent popularity of [clojure.spec](https://clojure.org/news/2016/05/23/introducing-clojure-spec) we are currently using schema coercion with `schema.coerce` from [plumatic/chema](https://github.com/plumatic/schema).
+* Despite the recent popularity of [clojure.spec](https://clojure.org/news/2016/05/23/introducing-clojure-spec) we are currently using schema coercion with `schema.coerce` from [plumatic/schema](https://github.com/plumatic/schema).
 * We currently prioritise working with [`core.matrix`](https://github.com/mikera/core.matrix) data structures over classic Clojure data structures (like collections of maps). For that we use [clojure.core.matrix](https://github.com/mikera/core.matrix/blob/develop/src/main/clojure/clojure/core/matrix.cljc) and [clojure.core.matrix.dataset](https://github.com/mikera/core.matrix/blob/develop/src/main/clojure/clojure/core/matrix/dataset.clj).
 * To manipulate core.matrix datasets, on top of the functions available in the library we use functions from [`witan.datasets`](https://github.com/MastodonC/witan.workspace-api/blob/master/src/witan/datasets.clj) developed at Mastodon C.
 
